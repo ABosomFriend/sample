@@ -29,7 +29,6 @@ public class DataBase {
 	 */
 	public static PreparedStatement setParams(Connection conn, String sql,
 											  Object... params) {
-
 		if(null == conn) {
 			conn = DBCPUtil.getConnection();
 		}
@@ -38,9 +37,7 @@ public class DataBase {
 
 		try {
 			pre = conn.prepareStatement(sql);
-
 			if (params != null && params.length > 0) {
-
 				for (int i = 0; i < params.length; ++i) {
 					pre.setObject(i + 1, params[i]);
 				}
@@ -60,15 +57,11 @@ public class DataBase {
 	public static ResultSet executeQuery(PreparedStatement pre) {
 
 		ResultSet res = null;
-
 		try {
-
 			res = pre.executeQuery();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return res;
 	}
 
@@ -79,32 +72,26 @@ public class DataBase {
 	 * @return  元数据
 	 */
 	public static ResultSetMetaData getMetaData(ResultSet res){
-
 		ResultSetMetaData metaData = null;
-
 		try {
 			metaData = res.getMetaData();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return metaData;
 	}
 
 
 	/**
-	 * 获取数据库中指定列名的值。如果是实体类，别忘了配{@link Column}注解
+	 * 获取数据库中指定列名的值。
 	 * @param res ResultSet
 	 * @param columnName 列名
 	 * @return 所对应的值
 	 */
 	public static Object getValue(ResultSet res, String columnName) {
-
 		Object value = null;
-
 		try {
 			value = res.getObject(columnName);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -123,11 +110,9 @@ public class DataBase {
 	 */
 	public static <T> T getObject(Connection conn, String sql, Class<T> obj,
 								  Object... params) throws SQLException {
-
-		Getter<T> get = new Getter<T>(conn,sql,obj);
+		Getter<T> get = new Getter<>(conn,sql,obj);
 		return get.getObject(params);
-
-	}
+}
 
 	/**
 	 * 通过特殊的查询获得一个List集合，可以对应相关的javaBean类型，同时也可以是基本数据类型
@@ -141,7 +126,7 @@ public class DataBase {
 	public static <T> List<T> getList(Connection conn, String sql,
 									  Class<T> obj, Object... params) throws SQLException {
 
-		Getter<T> get = new Getter<T>(conn,sql,obj);
+		Getter<T> get = new Getter<>(conn,sql,obj);
 		return get.getList(params);
 	}
 
@@ -154,10 +139,15 @@ public class DataBase {
 	 * @return true表示执行成功，false表示执行失败
 	 * @throws SQLException
 	 */
-	public static void modify(Connection conn, String sql, Object... params) throws SQLException{
-
+	public static boolean modify(Connection conn, String sql, Object... params) {
 		PreparedStatement pre = setParams(conn, sql, params);
-		pre.execute();
+		try {
+			pre.execute();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	/**
@@ -172,21 +162,25 @@ public class DataBase {
 
 		PreparedStatement pre = null;
 		boolean result = false;
-
 		try {
 			pre = conn.prepareStatement(sql);
+			conn.setAutoCommit(false);
 
-			for (T t : list) {
-
-				for(int i = 0; i < varNames.length; ++i) {
-					Object value = ClassUtil.getValue(t, varNames[i]);
-					pre.setObject(i + 1, value);
+			if(list != null && list.size() > 0) {
+				for (T t : list) {
+					for (int i = 0; i < varNames.length; ++i) {
+						Object value = ClassUtil.getValue(t, varNames[i]);
+						pre.setObject(i + 1, value);
+					}
+					pre.addBatch();
 				}
-				pre.addBatch();
 			}
 
 			if(list.size() == pre.executeBatch().length) {
+				conn.commit();
 				result = true;
+			} else {
+				conn.rollback();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
