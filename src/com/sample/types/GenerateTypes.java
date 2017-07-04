@@ -2,37 +2,48 @@ package com.sample.types;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * 产生相应的基本数据类型和其对应的包装类型
- * @author yizijun
- *
+ * 产生相应的从数据库中获取的类类型，同时也包括了基本数据类型与其包装类类型的对应。
+ * @author yizijun  created by 2017-7-3
  */
 public class GenerateTypes {
 
-	private static Class<?>[] basicTypes = {byte.class,
+	private static Class<?>[] basicTypes = {
+			byte.class,
 			short.class,
 			int.class,
 			long.class,
 			float.class,
 			double.class,
-			boolean.class,
-			char.class,
 			double.class,
-			long.class};
+			long.class
+	};
 
-	private static Class<?>[] packageTypes = {Byte.class,
+	private static Class<?>[] packageTypes = {
+			Byte.class,
 			Short.class,
 			Integer.class,
 			Long.class,
 			Float.class,
 			Double.class,
-			Boolean.class,
-			Character.class,
 			BigDecimal.class,
-			BigInteger.class};
+			BigInteger.class
+	};
+
+	//数据库中转化成java对象可能的类类型
+	private static Class<?>[] dateTypes = {
+			Date.class,
+			Time.class,
+			Timestamp.class
+	};
+
+	private static Class<?> stringType = String.class;
 
 	/**
 	 * 生成基本数据类类型集合
