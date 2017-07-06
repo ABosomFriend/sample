@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * 产生相应的从数据库中获取的类类型，同时也包括了基本数据类型与其包装类类型的对应。
- * @author yizijun  created by 2017-7-3
+ * @author yizijun
  */
 public class GenerateTypes {
 
@@ -59,6 +59,14 @@ public class GenerateTypes {
 	 */
 	public static List<Class<?>> generatePackageTypes() {
 		return Arrays.asList(packageTypes);
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public static List<Class<?>> generateDateTypes() {
+		return Arrays.asList(dateTypes);
 	}
 
 
