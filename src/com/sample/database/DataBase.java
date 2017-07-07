@@ -55,7 +55,6 @@ public class DataBase {
 	 * @return 查询完毕的ResultSet
 	 */
 	public static ResultSet executeQuery(PreparedStatement pre) {
-
 		ResultSet res = null;
 		try {
 			res = pre.executeQuery();
@@ -67,7 +66,6 @@ public class DataBase {
 
 	/**
 	 * 获取此 ResultSet 对象的列的编号、类型和属性。 也就是获取元数据
-	 *
 	 * @param res 结果集
 	 * @return  元数据
 	 */

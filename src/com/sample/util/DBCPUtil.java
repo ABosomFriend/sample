@@ -1,8 +1,6 @@
 package com.sample.util;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -16,7 +14,7 @@ public class DBCPUtil {
 
 	private static final Log log = LogFactory.getLog(DBCPUtil.class);
 
-	private static final String configFile = "/db.properties";
+	private static final String configFile = "/resources/dbcp.properties";
 
 	private static DataSource dataSource;
 
@@ -29,7 +27,6 @@ public class DBCPUtil {
 			 * void load(InputStream inStream) 从输入流中读出属性列表
 			 */
 			dbProperties.load(DBCPUtil.class.getResourceAsStream(configFile));
-
 			// 然后用dbcp给出的工厂创建一个DataSource
 			dataSource = BasicDataSourceFactory.createDataSource(dbProperties);
 		} catch (Exception e) {
@@ -48,12 +45,9 @@ public class DBCPUtil {
 	 * @return 一个数据库连接
 	 */
 	public static final Connection getConnection() {
-
 		Connection conn = null;
-
 		try {
 			conn = dataSource.getConnection();
-
 			// 并且当我db.properties中设置了defalutAutoCommit = false
 			// 这里获取的也为true；
 			// 当我们这里的参数设置为了false，我们修改数据的时候就不会自动提交了
@@ -63,25 +57,6 @@ public class DBCPUtil {
 		return conn;
 	}
 
-	/**
-	 * 关闭数据库的ResultSet和PreparedStatement连接，如果没有用到指定的参数， 则设为null
-	 *
-	 * @deprecated
-	 * @param res ResultSet
-	 * @param pre PreparedStatement
-	 */
-	public static void closeResAndPre(ResultSet res, PreparedStatement pre) {
-		try {
-			if (res != null) {
-				res.close();
-			}
-			if (pre != null) {
-				pre.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * 关闭连接
@@ -98,4 +73,5 @@ public class DBCPUtil {
 			e.printStackTrace();
 		}
 	}
+
 }

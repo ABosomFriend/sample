@@ -32,8 +32,6 @@ public class Getter<T> {
 
 	private Operator operator;
 
-	Getter() {}
-
 	public Getter(Connection conn, String sql, Class<T> obj) {
 		this.conn = conn;
 		this.sql = sql;
@@ -55,15 +53,12 @@ public class Getter<T> {
 	 * @return 具体的对象
 	 */
 	private Operator getInstance(Object... params) {
-
 		setPreAndRes(params);
-		/*
-		 * 判断是基本数据，还是实体类，然后在调用不同的方法
-		 */
+		//判断是基本数据，还是实体类，然后在调用不同的方法
 		if(!ClassUtil.hasAnnotation(obj, Table.class)) {
 			operator = new BasicOperator();
 		} else {
-			operator = new ComplexOperator(res,obj);
+			operator = new ComplexOperator(obj);
 		}
 		return operator;
 	}
@@ -75,10 +70,8 @@ public class Getter<T> {
 	 * @return 具体的对象
 	 */
 	public T getObject(Object... params) {
-
 		Operator operator = getInstance(params);
 		return operator.getObject(res, obj);
-
 	}
 	/**
 	 * 获得具体对象的List集合
@@ -86,10 +79,8 @@ public class Getter<T> {
 	 * @return 具体对象的List集合
 	 */
 	public List<T> getList(Object... params) {
-
 		Operator operator = getInstance(params);
 		return operator.getList(res, obj);
-
 	}
 
 }

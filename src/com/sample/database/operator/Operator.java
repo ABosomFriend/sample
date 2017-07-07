@@ -28,5 +28,5 @@ public abstract class Operator {
 	 * @param res ResultSet
 	 * @param entity 对应的对象，如果是基本数据类型就没有这个对象，直接把其设置为null就行
 	 */
-	public abstract <T> void setParamValues(ResultSet res, T entity);
+	protected abstract <T> void setParamValues(ResultSet res, T entity);
 }
